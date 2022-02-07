@@ -18,9 +18,9 @@ module Node{
 
    uses interface SplitControl as AMControl;
    uses interface Receive;
-
+   uses interface NeighborDiscovery;
    uses interface SimpleSend as Sender;
-
+   uses interface Flooding;
    uses interface CommandHandler;
 }
 
