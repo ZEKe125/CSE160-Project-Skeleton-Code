@@ -63,13 +63,16 @@ implementation
 			}
 			//Kill the packet if TTL is 0
 			if (contents->TTL == 0){
-            //do nothing
-            dbg(FLOODING_CHANNEL, "TTL: %d\n", contents-> TTL);
-            return msg;
-            }
+			    // how to kill a packet
+			}else {
+				//do nothing
+			    	dbg(FLOODING_CHANNEL, "TTL: %d\n", contents-> TTL);
+			    	return msg;
+			
+			}
 
-            .
-            .
-            . 
+			 .
+			 .
+			 . 
 
-            // to be continued by you ...
+			 // to be continued by you ...
