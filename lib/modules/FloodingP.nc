@@ -39,13 +39,13 @@ implementation{
 	command error_t Flooding.send(pack msg, uint16_t dest)
 	{
 		//Attempt to send the packet
-		dbg(FLOODING_CHANNEL, "Sending from Flooding\n");
+		
 		msg.src = TOS_NODE_ID;
 		msg.TTL = MAX_TTL;
 		msg.seq = seqNumber++;
 		msg.protocol = PROTOCOL_PING;
 		
-
+		dbg(FLOODING_CHANNEL, "Sending from Flooding\n");
 		if (call Sender.send(msg, AM_BROADCAST_ADDR) == SUCCESS)
 		{
 			return SUCCESS;
