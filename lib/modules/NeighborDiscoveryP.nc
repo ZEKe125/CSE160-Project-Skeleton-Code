@@ -8,49 +8,49 @@
 module NeighborDiscoveryP
 {
 
-    //Provides the SimpleSend interface in order to neighbor discover packets
-    provides interface NeighborDiscovery;
-    
-    
-    //Uses SimpleSend interface to forward recieved packet as broadcast
-    uses interface SimpleSend as Sender;
-    //Uses the Receive interface to determine if received packet is meant for me.
+	//Provides the SimpleSend interface in order to neighbor discover packets
+	provides interface NeighborDiscovery;
+
+
+	//Uses SimpleSend interface to forward recieved packet as broadcast
+	uses interface SimpleSend as Sender;
+	//Uses the Receive interface to determine if received packet is meant for me.
 	uses interface Receive as Receiver;
 
-    uses interface Packet;
-    uses interface AMPacket;
+	uses interface Packet;
+	uses interface AMPacket;
 	//Uses the Queue interface to determine if packet recieved has been seen before
 	uses interface List<neighbor> as Neighborhood;
-    uses interface Timer<TMilli> as periodicTimer;
-   
+	uses interface Timer<TMilli> as periodicTimer;
+
 }
 
 
 implementation{
     
-    pack sendPackage; 
-    neighbor neighborHolder;
-    uint16_t SEQ_NUM=200;
-    uint8_t * temp = &SEQ_NUM;
+	pack sendPackage; 
+	neighbor neighborHolder;
+	uint16_t SEQ_NUM=200;
+	uint8_t * temp = &SEQ_NUM;
 	uint16_t i;
 	uint16_t x;
-    void makePack(pack * Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t seq, uint16_t protocol, uint8_t * payload, uint8_t length);
+	void makePack(pack * Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t seq, uint16_t protocol, uint8_t * payload, uint8_t length);
 
 	bool isNeighbor(uint8_t nodeid);
-    error_t addNeighbor(uint8_t nodeid);
-    void updateNeighbors();
-    void printNeighborhood();
+	error_t addNeighbor(uint8_t nodeid);
+	void updateNeighbors();
+	void printNeighborhood();
 	uint8_t neighborCount;
-    uint8_t neighbors[19]; //Maximum of 20 neighbors?
+	uint8_t neighbors[19]; //Maximum of 20 neighbors?
 
  
     command void NeighborDiscovery.run()
 	{
-        makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, SEQ_NUM , PROTOCOL_PING, temp , PACKET_MAX_PAYLOAD_SIZE);
-        SEQ_NUM++;
-        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-        neighborCount = 0;
-        call periodicTimer.startPeriodic(1000);
+		makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, SEQ_NUM , PROTOCOL_PING, temp , PACKET_MAX_PAYLOAD_SIZE);
+		SEQ_NUM++;
+		call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+		neighborCount = 0;
+		call periodicTimer.startPeriodic(1000);
 	}
 
     event void periodicTimer.fired()
