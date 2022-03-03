@@ -46,6 +46,7 @@ implementation{
  
  	command void NeighborDiscovery.run()
 	{
+		dbg(NEIGHBOR_CHANNEL, "NeighborDiscovery run().\n");
 		makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, SEQ_NUM , PROTOCOL_PING, temp , PACKET_MAX_PAYLOAD_SIZE);
 		SEQ_NUM++;
 		call Sender.send(sendPackage, AM_BROADCAST_ADDR);
@@ -60,6 +61,7 @@ implementation{
 
 		//optional - call a funsion to organize the list
 		makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, SEQ_NUM , PROTOCOL_PING, temp , PACKET_MAX_PAYLOAD_SIZE);
+		SEQ_NUM++;
 		call Sender.send(sendPackage, AM_BROADCAST_ADDR);
     	}
 
@@ -97,10 +99,10 @@ implementation{
                  // to be continued by you ...
                  
                  
-                }
-            }
-        }
-    }
+		}
+	    }
+	}
+}
     
     
     void makePack(pack * Package, uint16_t src, uint16_t dest, uint16_t TTL, 
@@ -141,10 +143,10 @@ implementation{
         }
 
 	void updateNeighbors(){
-		// implementation
-		// delete all neighbors 
-		// re-find them?
-		// call a ping
+	
+		for( x=0; x < 19; x++) {
+			neighbors[x] = NULL;
+		}
 	}
 	
 	void printNeighborhood(){
