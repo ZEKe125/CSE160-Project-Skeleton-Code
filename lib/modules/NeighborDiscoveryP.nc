@@ -71,37 +71,37 @@ implementation{
 
 	event message_t *Receiver.receive(message_t * msg, void *payload, uint8_t len){
 	
-        if (len == sizeof(pack)){ 
-		//check if there's an actual packet
-		pack *contents = (pack*) payload;
-		dbg(NEIGHBOR_CHANNEL, "NeighborReciver Called \n");
+		if (len == sizeof(pack)){ 
+			//check if there's an actual packet
+			pack *contents = (pack*) payload;
+			dbg(NEIGHBOR_CHANNEL, "NeighborReciver Called \n");
 
-		if (PROTOCOL_PING == contents-> protocol){ 
-			//got a message, not a reply
-                	if (contents->TTL == 1){
-				// add to neighbors
-				addNeighbors(contents -> src);
-				neighborCount++;
-				if(!neighbors[i] == NULL){
-					break;
+			if (contents->TTL != 0){
+
+				if (PROTOCOL_PING == contents-> protocol){ 
+					//got a ping
+					dbg(NEIGHBOR_CHANNEL, "Node %d recieved packet with protocol Ping, sending reply back to node %d\n", TOS_NODE_ID, contents->src); 
+					// send PROTOCOL_PINGREPLY
+					makePack(&sendPackage, TOS_NODE_ID, contents->src , 1, contents->seq, PROTOCOL_PINGREPLY, contents->payload, PACKET_MAX_PAYLOAD_SIZE);
+					call Sender.send(sendPackage,contents->src);
+					return msg;
 				}
-			}
-		}
-					
-		// send PROTOCOL_PINGREPLY
-		makePack(&sendPackage, TOS_NODE_ID, contents->src , 1, contents->seq, PROTOCOL_PINGREPLY, contents->payload, PACKET_MAX_PAYLOAD_SIZE);
-		call Sender.send(sendPackage,contents->src);
-        			
-                 .
-                 .
-                 .
+				if (PROTOCOL_PINGREPLY == contents-> protocol){
+					// add to neighbors
+					dbg(NEIGHBOR_CHANNEL, "Node %d recieved protocol PingReply from node %d\n", TOS_NODE_ID, contents->src);
+					if(!isNeighbor(contents -> src){
+						addNeighbors(contents -> src);
+						dbg(NEIGHBOR_CHANNEL, "Node %d added node %d to neigbors\n", TOS_NODE_ID, contents->src);
+					}
+					return msg;				
+				}
 
-                 // to be continued by you ...
-                 
-                 
+			}
+
+
 		}
-	    }
 	}
+	
 }
     
     
