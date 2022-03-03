@@ -81,14 +81,13 @@ implementation{
 				dbg(FLOODING_CHANNEL, "this = packet dest from : %d to %d\n", contents->src ,contents->dest);
 				
 				if(contents->protocol == PROTOCOL_PING){
-				    
 					// WE NEED PING REPLY
 					 makePack(&sendPackage, contents->dest, contents->src, contents->TTL-1,  contents->seq, PROTOCOL_PINGREPLY, 
-					 	(uint8_t *)contents->payload, sizeof(contents->payload));
-                    call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-                    return msg;
+						(uint8_t *)contents->payload, sizeof(contents->payload));
+					    call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+					    return msg;
                     
-			    }
+			    	}
 			    
 		        if(contents->protocol == PROTOCOL_PINGREPLY){
 		            dbg(FLOODING_CHANNEL, "received a Ping_Reply from %d\n", contents->src);
