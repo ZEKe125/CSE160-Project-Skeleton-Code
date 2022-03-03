@@ -63,13 +63,13 @@ implementation{
 			//If I am the original sender or have seen the packet before, drop it
 			if ((contents->src == TOS_NODE_ID) || isInList(*contents)){
 			    
-				dbg(FLOODING_CHANNEL, "Dropping packet.\n");
+				dbg(FLOODING_CHANNEL, "Dropping packet: have it or this is src.\n");
 				return msg;
 			}
 			//Kill the packet if TTL is 0
 			if (contents->TTL == 0){
 			    
-			    	dbg(FLOODING_CHANNEL, "Dropping packet.\n");
+			    	dbg(FLOODING_CHANNEL, "Dropping packet: ttl is 0.\n");
 				    return msg;
 				    
 			}else {
@@ -82,6 +82,7 @@ implementation{
 				
 				if(contents->protocol == PROTOCOL_PING){
 					// WE NEED PING REPLY
+					dbg(FLOODING_CHANNEL, "recieved PING from: %d\n", contents->src);
 					 makePack(&sendPackage, contents->dest, contents->src, contents->TTL-1,  contents->seq, PROTOCOL_PINGREPLY, 
 						(uint8_t *)contents->payload, sizeof(contents->payload));
 					    call Sender.send(sendPackage, AM_BROADCAST_ADDR);
@@ -99,7 +100,7 @@ implementation{
 				if(contents-> dest == AM_BROADCAST_ADDR){
 					// Broadcast packet
 					if(contents->protocol == PROTOCOL_PING){
-
+						dbg(FLOODING_CHANNEL, "recieved PING from: %d\n", contents->src);
 						dbg(GENERAL_CHANNEL,"NeighborDiscovery for %d\n",contents->src);
 						makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, contents->TTL-1 , seqNumber, PROTOCOL_PINGREPLY, 
 							(uint8_t *)contents->payload, PACKET_MAX_PAYLOAD_SIZE);
@@ -108,7 +109,7 @@ implementation{
 					}
 
 					if(contents->protocol == PROTOCOL_PINGREPLY){
-
+						dbg(FLOODING_CHANNEL, "received a Ping_Reply from %d\n", contents->src);
 						call NeighborDiscovery.neighborReceived(contents);
 						return msg;    
 					}
