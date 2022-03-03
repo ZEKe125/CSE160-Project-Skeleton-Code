@@ -96,30 +96,29 @@ implementation{
 			    
 			}else{
 			    
-			    if(contents-> dest == AM_BROADCAST_ADDR){
-			        // Broadcast packet
-                    if(contents->protocol == PROTOCOL_PING){
-                        
-                        dbg(GENERAL_CHANNEL,"NeighborDiscovery for %d\n",contents->src);
-                        makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, contents->TTL-1 , seqNumber, PROTOCOL_PINGREPLY, 
-                                (uint8_t *)contents->payload, PACKET_MAX_PAYLOAD_SIZE);
-                        call Sender.send(sendPackage, contents->src);
-                        return msg;
-                    }
-        
-                    if(contents->protocol == PROTOCOL_PINGREPLY){
-                        
-                        call NeighborDiscovery.neighborReceived(contents);
-                        return msg;    
-                    }
-                    
-			        return msg;
-		    	}
+				if(contents-> dest == AM_BROADCAST_ADDR){
+					// Broadcast packet
+					if(contents->protocol == PROTOCOL_PING){
+
+						dbg(GENERAL_CHANNEL,"NeighborDiscovery for %d\n",contents->src);
+						makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, contents->TTL-1 , seqNumber, PROTOCOL_PINGREPLY, 
+							(uint8_t *)contents->payload, PACKET_MAX_PAYLOAD_SIZE);
+						call Sender.send(sendPackage, contents->src);
+						return msg;
+					}
+
+					if(contents->protocol == PROTOCOL_PINGREPLY){
+
+						call NeighborDiscovery.neighborReceived(contents);
+						return msg;    
+					}
+
+					return msg;
+				}
 		    	
 			}
 	    	
-	    	return msg;
-
+	    		return msg;
 
 		}	
 	}
