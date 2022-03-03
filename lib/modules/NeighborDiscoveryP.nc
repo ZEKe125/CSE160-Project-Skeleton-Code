@@ -10,6 +10,8 @@ module NeighborDiscoveryP
 
     //Provides the SimpleSend interface in order to neighbor discover packets
     provides interface NeighborDiscovery;
+    
+    
     //Uses SimpleSend interface to forward recieved packet as broadcast
     uses interface SimpleSend as Sender;
     //Uses the Receive interface to determine if received packet is meant for me.
@@ -24,14 +26,14 @@ module NeighborDiscoveryP
 }
 
 
-implementation
-{
+implementation{
     
     pack sendPackage; 
     neighbor neighborHolder;
     uint16_t SEQ_NUM=200;
     uint8_t * temp = &SEQ_NUM;
 	uint16_t i;
+	uint16_t x;
     void makePack(pack * Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t seq, uint16_t protocol, uint8_t * payload, uint8_t length);
 
 	bool isNeighbor(uint8_t nodeid);
@@ -48,16 +50,13 @@ implementation
         SEQ_NUM++;
         call Sender.send(sendPackage, AM_BROADCAST_ADDR);
         neighborCount = 0;
-        call periodicTimer.startPeriodic(100000);
+        call periodicTimer.startPeriodic(1000);
 	}
 
     event void periodicTimer.fired()
     {
         dbg(NEIGHBOR_CHANNEL, "Sending from NeighborDiscovery\n");
         updateNeighbors();
-
-
-
 
         //optional - call a funsion to organize the list
         makePack(&sendPackage, TOS_NODE_ID, AM_BROADCAST_ADDR, 1, SEQ_NUM , PROTOCOL_PING, temp , PACKET_MAX_PAYLOAD_SIZE);
@@ -81,17 +80,15 @@ implementation
                 {	
 					// add to neighbors
 					for( i=0; i < 19; i++) {
-						if(neigbors[i] == NULL){
-							neigbors[i] = contents -> src;
+						if(neighbors[i] == NULL){
+							neighbors[i] = contents -> src;
 							neighborCount++;
+    						if(!neighbors[i] == NULL){
+    							break;
+    						}
 						}
-						if(!neighbors[i] == NULL){
-							break;
-						}
-							
 					}
 					
-					neighborCount++;
 					// send PROTOCOL_PINGREPLY
 					makePack(&sendPackage, TOS_NODE_ID, contents->src , 1, contents->seq, PROTOCOL_PINGREPLY, contents->payload, PACKET_MAX_PAYLOAD_SIZE);
         			call Sender.send(sendPackage,contents->src);
@@ -101,3 +98,63 @@ implementation
                  .
 
                  // to be continued by you ...
+                 
+                 
+                }
+            }
+        }
+    }
+    
+    
+    void makePack(pack * Package, uint16_t src, uint16_t dest, uint16_t TTL, 
+            uint16_t seq, uint16_t protocol, uint8_t * payload, uint8_t length){
+                // implementation
+                Package->src = src;
+                Package->dest = dest;
+                Package->TTL = TTL;
+                Package->seq = seq;
+                Package->protocol = protocol;
+                memcpy(Package->payload, payload, length);
+                
+            }
+	bool isNeighbor(uint8_t nodeid){
+	    
+	    for( x=0; x < 19; x++){
+			if(neighbors[x] == nodeid){
+			    return TRUE;
+            }
+		}
+		return FALSE;
+	    
+	}
+    error_t addNeighbor(uint8_t nodeid){
+        // implementation
+        for( x=0; x < 19; x++) {
+		    if(neighbors[x] == NULL){
+    			neighbors[x] = nodeid;
+    			neighborCount++;
+    			if(!neighbors[x] == NULL){
+    				break;
+    			}
+			}
+		}
+        
+    }
+    void updateNeighbors(){
+        // implementation
+        // delete all neighbors 
+        // re-find them?
+        // call a ping
+    }
+    void printNeighborhood(){
+        // implementation
+        for( x=0; x < 19; x++) {
+		    if(neighbors[x] != NULL){
+    			 dbg(NEIGHBOR_CHANNEL, "NEIGHBOURS  of node  %d is :%d\n",TOS_NODE_ID, neighbors[x]);
+    		}
+		}
+	}
+        
+        
+    }
+    
