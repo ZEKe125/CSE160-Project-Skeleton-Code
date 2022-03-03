@@ -21,7 +21,6 @@ module FloodingP{
 	
 	//Uses the Queue interface to determine if packet recieved has been seen before
 	uses interface List<pack> as KnownPacketsList;
-
 	uses interface NeighborDiscovery;
 }
 
