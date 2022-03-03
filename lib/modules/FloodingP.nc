@@ -125,29 +125,31 @@ implementation{
 		}	
 	}
 	
-	   void makePack(pack *package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t seq, uint16_t protocol,  uint8_t* payload, uint8_t length){
-         package->src = src;
-         package->dest = dest;
-         package->TTL = TTL;
-         package->seq = seq;
-         package->protocol = protocol;
-         memcpy(package->payload, payload, length);
-      }  
+	
+void makePack(pack *package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t seq, uint16_t protocol,  uint8_t* payload, uint8_t length){
+
+	 package->src = src;
+	 package->dest = dest;
+	 package->TTL = TTL;
+	 package->seq = seq;
+	 package->protocol = protocol;
+	 memcpy(package->payload, payload, length);
+}  
 	    
-      //Searches in known packet list
-      bool isInList(pack *packet)
-      {
-        uint16_t size = call KnownPacketsList.size();
-        uint16_t i = 0;
-        pack temp;
-        for(i = 0; i < size; i++) {
-          temp = call KnownPacketsList.get(i);
-          if(temp.src == packet->src && temp.dest == packet->dest && temp.seq == packet->seq) {
-            return TRUE;
-          }
-        }
-        return FALSE;
-      }
+//Searches in known packet list
+bool isInList(pack *packet){
+
+	uint16_t size = call KnownPacketsList.size();
+	uint16_t i = 0;
+	pack temp;
+	for(i = 0; i < size; i++) {
+	  temp = call KnownPacketsList.get(i);
+	  if(temp.src == packet->src && temp.dest == packet->dest && temp.seq == packet->seq) {
+	    return TRUE;
+	  }
+	}
+	return FALSE;
+}
 
       void addToList(pack packet){
               if(call KnownPacketsList.isFull())
