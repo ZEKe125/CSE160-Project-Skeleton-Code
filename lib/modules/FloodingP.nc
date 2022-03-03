@@ -89,10 +89,10 @@ implementation{
                     
 			    	}
 			    
-		        if(contents->protocol == PROTOCOL_PINGREPLY){
-		            dbg(FLOODING_CHANNEL, "received a Ping_Reply from %d\n", contents->src);
-		            return msg;
-		        }
+				if(contents->protocol == PROTOCOL_PINGREPLY){
+				    dbg(FLOODING_CHANNEL, "received a Ping_Reply from %d\n", contents->src);
+				    return msg;
+				}
 			    
 			}else{
 			    
