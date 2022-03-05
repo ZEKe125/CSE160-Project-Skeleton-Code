@@ -110,7 +110,10 @@ implementation{
 
 					if(contents->protocol == PROTOCOL_PINGREPLY){
 						dbg(FLOODING_CHANNEL, "received a Ping_Reply from %d\n", contents->src);
-						call NeighborDiscovery.neighborReceived(contents);
+						call NeighborDiscovery.Receiver(contents);
+						if(!isInList(contents)){
+							addToList(*contents);
+						}
 						return msg;    
 					}
 
